@@ -142,8 +142,6 @@ def main():
         except (ValueError, IndexError):
             print("Invalid selection. Please enter a valid item number.")
             
-def borrow(self):
-    return f"{self.name} is Fiction and cannot be borrowed."
 
 if __name__ == "__main__":
     main()
