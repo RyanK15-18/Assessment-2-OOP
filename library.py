@@ -72,16 +72,53 @@ class Electronics(ItemAtLibrary):
             return f"{self.name} has been borrowed until the end of the day."
         return f"{self.name} is already borrowed."
     
+def load_inventory(filename):
+    fiction_inventory = []
+    nonfiction_inventory = []
+    electronic_inventory = []
+    textbook_inventory = []
+
+    with open(filename, 'r') as file:
+        for line in file:
+            parts = line.strip().split(',')
+            if len(parts) < 4:
+                continue
+
+            item_type = parts[0].lower()
+            name = parts[1]
+            author_or_brand = parts[2]
+            serial = parts[3]
+            
+            if item_type == "fiction":
+                fiction_inventory.append(Fiction(name, author_or_brand, serial))
+            elif item_type == "nonfiction":
+                nonfiction_inventory.append(NonFiction(name, author_or_brand, serial))
+            elif item_type == "textbook":
+                subject = parts[4] if len(parts) > 4 else "Unknown"
+                textbook_inventory.append(TextBook(name, author_or_brand, serial, subject))
+            elif item_type == "electronics":
+                electronic_inventory.append(Electronics(name, author_or_brand, serial))
+
+    return fiction_inventory, nonfiction_inventory, textbook_inventory, electronic_inventory
+
+
 def main():
-    # items in a library
-    fiction_book = Fiction("The Lost World", "Arthur Conan Doyle", "FIC123")
-    nonfiction_book = NonFiction("A Brief History of Time", "Stephen Hawking", "NF456")
-    textbook = TextBook("Calculus Essentials", "John Smith", "TB789", subject="Mathematics")
-    laptop = Electronics("Library Laptop", "Dell", "EL321")
-    
-    
-#they want to return or borrow
-#what item do they want Electronic, textbook, fiction, nonfiction
-#
+    fiction, nonfiction, textbooks, electronics = load_inventory('library_inventory.txt')
 
+    item_types = {
+        "fiction": fiction,
+        "nonfiction": nonfiction,
+        "textbook": textbooks,
+        "electronics": electronics
+    }
 
+    while True:
+        action = input("\nWould you like to borrow or return an item? (borrow/return/exit): ").strip().lower()
+        if action == "exit":
+            print("Thanks for visiting the library!")
+            break
+
+        category = input("Enter item type (fiction/nonfiction/textbook/electronics): ").strip().lower()
+        if category not in item_types:
+            print("Invalid category. Try again.")
+            continue
