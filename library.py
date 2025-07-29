@@ -122,3 +122,28 @@ def main():
         if category not in item_types:
             print("Invalid category. Try again.")
             continue
+
+        # Filter available items if borrowing
+        available_items = [item for item in item_types[category] if not item.borrowed] if action == "borrow" else item_types[category]
+        if not available_items:
+            print(f"No items available to {action} in category: {category}")
+            continue
+
+        print(f"\n Select an item to {action}:")
+        for i, item in enumerate(available_items, start=1):
+            status = "Borrowed" if item.borrowed else "Available"
+            print(f"{i}. {item.name} by {item.authorName} [{status}]")
+
+        try:
+            choice = int(input("\nEnter the number of the item you'd like to choose: ").strip())
+            selected_item = available_items[choice - 1]
+            result = selected_item.borrow() if action == "borrow" else selected_item.return_item()
+            print(result)
+        except (ValueError, IndexError):
+            print("Invalid selection. Please enter a valid item number.")
+            
+def borrow(self):
+    return f"{self.name} is Fiction and cannot be borrowed."
+
+if __name__ == "__main__":
+    main()
